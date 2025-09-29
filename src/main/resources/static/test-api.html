@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheko API Tester</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .endpoint { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .endpoint h3 { margin-top: 0; color: #333; }
+        .result { background: #f5f5f5; padding: 10px; border-radius: 3px; margin-top: 10px; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        input { padding: 5px; margin: 5px; border: 1px solid #ddd; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🍽️ Cheko Restaurant API Tester</h1>
+    
+    <div class="endpoint">
+        <h3>🔍 Search Menu Items</h3>
+        <input type="text" id="searchQuery" placeholder="Enter search term (e.g., chicken)" value="chicken">
+        <button onclick="searchItems()">Search</button>
+        <div id="searchResult" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>🎯 Second-Highest Calorie (Main Business Requirement)</h3>
+        <button onclick="getSecondHighestCalorie()">Get Second-Highest Calorie per Category</button>
+        <div id="calorieResult" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>📊 Category Counts (for Cards Display)</h3>
+        <button onclick="getCategoryCounts()">Get Category Counts</button>
+        <div id="countsResult" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>🗺️ Map Markers (Mapbox Integration)</h3>
+        <button onclick="getMapMarkers()">Get All Map Markers</button>
+        <div id="markersResult" class="result"></div>
+    </div>
+
+    <div class="endpoint">
+        <h3>⭐ Best Sellers</h3>
+        <button onclick="getBestSellers()">Get Best Seller Items</button>
+        <div id="bestSellersResult" class="result"></div>
+    </div>
+
+    <script>
+        async function searchItems() {
+            const query = document.getElementById('searchQuery').value;
+            try {
+                const response = await fetch(`/api/menu/items/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                document.getElementById('searchResult').innerHTML = 
+                    `<strong>Found ${data.totalElements} items:</strong><br>` +
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('searchResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function getSecondHighestCalorie() {
+            try {
+                const response = await fetch('/api/menu/second-highest-calorie');
+                const data = await response.json();
+                document.getElementById('calorieResult').innerHTML = 
+                    '<strong>Second-Highest Calorie per Category:</strong><br>' +
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('calorieResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function getCategoryCounts() {
+            try {
+                const response = await fetch('/api/menu/categories/counts');
+                const data = await response.json();
+                document.getElementById('countsResult').innerHTML = 
+                    '<strong>Items per Category:</strong><br>' +
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('countsResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function getMapMarkers() {
+            try {
+                const response = await fetch('/api/map/markers');
+                const data = await response.json();
+                document.getElementById('markersResult').innerHTML = 
+                    `<strong>Found ${data.length} branch locations:</strong><br>` +
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('markersResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+
+        async function getBestSellers() {
+            try {
+                const response = await fetch('/api/menu/items/best-sellers');
+                const data = await response.json();
+                document.getElementById('bestSellersResult').innerHTML = 
+                    `<strong>Found ${data.length} best sellers:</strong><br>` +
+                    JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('bestSellersResult').innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
+
